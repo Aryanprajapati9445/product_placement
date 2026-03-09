@@ -28,17 +28,16 @@
 ### 3. Copy the "Embed Code"
 ### 4. Paste into your HTML page
 
-### Sample Embed Code:
-### <div class='tableauPlaceholder'>
-###   <object class='tableauViz' width='1366' height='768'>
-###     <param name='host_url' value='https://public.tableau.com/' />
-###     <param name='embed_code_version' value='3' />
-###     <param name='site_root' value='' />
-###     <param name='name' value='YOUR_WORKBOOK_NAME/Dashboard' />
-###     <param name='tabs' value='no' />
-###     <param name='toolbar' value='yes' />
-###   </object>
-### </div>
+### Actual Embed Code (from Tableau Public):
+### Workbook: product_placement / Dashboard1
+### Viz ID: viz1773026387135
+### URL: https://public.tableau.com/views/product_placement/Dashboard1
+###
+### Web Integration File: ../index.html
+### - Fully responsive HTML page with embedded Tableau dashboard
+### - Includes all 7 story scenes with interactive navigation
+### - Key findings summary cards
+### - Open index.html in a browser to view the complete integration
 
 ## ===================================================================
 ## SHARING OPTIONS

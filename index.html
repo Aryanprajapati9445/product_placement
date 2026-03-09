@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategic Product Placement Analysis | Sales Impact Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: #f4f6fa;
+            color: #1a1a2e;
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── Scroll animations ──────────────────────────── */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ── Navigation ─────────────────────────────────── */
+        nav {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 14px 40px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        nav .nav-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        nav .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        nav h1 {
+            color: #fff;
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 6px;
+        }
+
+        nav ul li a {
+            color: rgba(255,255,255,0.65);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.25s;
+        }
+
+        nav ul li a:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* ── Hero Section ───────────────────────────────── */
+        .hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #1e1b4b 100%);
+            color: #fff;
+            text-align: center;
+            padding: 100px 40px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 30% 50%, rgba(99,102,241,0.15) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 50%, rgba(139,92,246,0.1) 0%, transparent 50%);
+            animation: heroGlow 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes heroGlow {
+            0%   { transform: translate(0, 0); }
+            100% { transform: translate(-5%, 3%); }
+        }
+
+        .hero > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(99,102,241,0.2);
+            border: 1px solid rgba(99,102,241,0.3);
+            color: #a5b4fc;
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 24px;
+        }
+
+        .hero h2 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -1.5px;
+            line-height: 1.15;
+            background: linear-gradient(135deg, #fff 0%, #c7d2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 17px;
+            color: rgba(255,255,255,0.6);
+            max-width: 620px;
+            margin: 0 auto 0;
+            font-weight: 400;
+            line-height: 1.8;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 48px;
+            flex-wrap: wrap;
+        }
+
+        .hero-stat {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 24px 36px;
+            min-width: 160px;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .hero-stat:hover {
+            transform: translateY(-4px);
+            border-color: rgba(99,102,241,0.4);
+        }
+
+        .hero-stat .number {
+            font-size: 38px;
+            font-weight: 800;
+            display: block;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #a5b4fc, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-stat .label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.8px;
+            color: rgba(255,255,255,0.45);
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        /* ── Section Containers ─────────────────────────── */
+        .section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 80px 40px;
+        }
+
+        .section.dashboard-full {
+            max-width: 100%;
+            padding: 60px 32px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, #ede9fe, #e0e7ff);
+            color: #6366f1;
+            padding: 5px 14px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 16px;
+        }
+
+        .section-header h2 {
+            font-size: 36px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 12px;
+            letter-spacing: -0.8px;
+        }
+
+        .section-header p {
+            font-size: 16px;
+            color: #64748b;
+            max-width: 560px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        /* ── Dashboard Section ──────────────────────────── */
+        .dashboard-section {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 30px rgba(0,0,0,0.06);
+            padding: 16px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .tableau-container {
+            width: 100%;
+            min-height: 900px;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #fafafa;
+        }
+
+        .tableau-container .tableauPlaceholder {
+            width: 100% !important;
+            min-height: 900px;
+        }
+
+        /* ── Story Section ──────────────────────────────── */
+        .story-section {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 30px rgba(0,0,0,0.06);
+            padding: 48px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        /* Story Progress Bar */
+        .story-progress {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin-bottom: 40px;
+            padding: 0 20px;
+        }
+
+        .story-progress .step {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
+
+        .story-progress .step:last-child {
+            flex: 0;
+        }
+
+        .story-progress .dot {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            border: 2px solid #e2e8f0;
+            color: #94a3b8;
+            font-weight: 700;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 2;
+            flex-shrink: 0;
+        }
+
+        .story-progress .dot:hover {
+            border-color: #6366f1;
+            color: #6366f1;
+            transform: scale(1.1);
+        }
+
+        .story-progress .dot.active {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-color: transparent;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(99,102,241,0.4);
+            transform: scale(1.12);
+        }
+
+        .story-progress .dot.completed {
+            background: #10b981;
+            border-color: transparent;
+            color: #fff;
+        }
+
+        .story-progress .line {
+            flex: 1;
+            height: 3px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            transition: background 0.4s;
+        }
+
+        .story-progress .line.filled {
+            background: linear-gradient(90deg, #10b981, #6366f1);
+        }
+
+        /* Story Cards */
+        .story-point {
+            display: none;
+            animation: slideIn 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .story-point.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+
+        .story-card {
+            background: linear-gradient(135deg, #fafafe, #f0f0ff);
+            border-radius: 16px;
+            padding: 40px 44px;
+            border: 1px solid rgba(99,102,241,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, #6366f1, #8b5cf6);
+            border-radius: 5px 0 0 5px;
+        }
+
+        .story-card .story-number {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            color: #6366f1;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .story-card h3 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .story-card .caption {
+            font-size: 15px;
+            font-style: italic;
+            color: #64748b;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(99,102,241,0.12);
+        }
+
+        .story-card .insight-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #6366f1;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+        .story-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .story-card ul li {
+            padding: 10px 0 10px 28px;
+            position: relative;
+            font-size: 15px;
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        .story-card ul li::before {
+            content: '';
+            position: absolute;
+            left: 4px;
+            top: 18px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        }
+
+        .story-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 28px;
+        }
+
+        .story-controls button {
+            padding: 12px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-prev {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(99,102,241,0.3);
+        }
+
+        .btn-prev:hover { background: #e2e8f0; color: #0f172a; }
+        .btn-next:hover { box-shadow: 0 6px 20px rgba(99,102,241,0.45); transform: translateY(-1px); }
+        .btn-prev:disabled,
+        .btn-next:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .story-counter {
+            font-size: 13px;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        /* ── Key Findings ───────────────────────────────── */
+        .findings-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .finding-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .finding-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .finding-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.04), 0 12px 40px rgba(99,102,241,0.1);
+        }
+
+        .finding-card:hover::after {
+            opacity: 1;
+        }
+
+        .finding-card .icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #ede9fe, #e0e7ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 18px;
+        }
+
+        .finding-card h4 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+            letter-spacing: -0.2px;
+        }
+
+        .finding-card p {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.7;
+        }
+
+        /* ── Footer ─────────────────────────────────────── */
+        footer {
+            background: #0f172a;
+            color: rgba(255,255,255,0.5);
+            text-align: center;
+            padding: 40px 40px;
+            font-size: 13px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+
+        footer a {
+            color: #818cf8;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        footer a:hover {
+            color: #a5b4fc;
+        }
+
+        /* ── Responsive ─────────────────────────────────── */
+        @media (max-width: 1024px) {
+            .findings-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .hero { padding: 60px 24px 50px; }
+            .hero h2 { font-size: 32px; }
+            .hero-stats { gap: 10px; }
+            .hero-stat { padding: 18px 20px; min-width: 140px; }
+            nav ul { display: none; }
+            .section { padding: 50px 20px; }
+            .section.dashboard-full { padding: 30px 12px; }
+            .story-section { padding: 24px; }
+            .story-card { padding: 28px 24px; }
+            .findings-grid { grid-template-columns: 1fr; }
+            .story-progress { padding: 0; overflow-x: auto; }
+            .story-progress .dot { width: 34px; height: 34px; font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-inner">
+            <div class="logo">
+                <div class="logo-icon">&#9670;</div>
+                <h1>Product Placement Analysis</h1>
+            </div>
+            <ul>
+                <li><a href="#dashboard">Dashboard</a></li>
+                <li><a href="#story">Story</a></li>
+                <li><a href="#findings">Findings</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badge">Data Analytics Project</div>
+        <h2>Strategic Product Placement Analysis</h2>
+        <p>Unveiling the impact of in-store product positioning on sales performance across categories, demographics, and promotional strategies.</p>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <span class="number">989</span>
+                <span class="label">Products Analyzed</span>
+            </div>
+            <div class="hero-stat">
+                <span class="number">3</span>
+                <span class="label">Store Positions</span>
+            </div>
+            <div class="hero-stat">
+                <span class="number">3</span>
+                <span class="label">Categories</span>
+            </div>
+            <div class="hero-stat">
+                <span class="number">4</span>
+                <span class="label">Demographics</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Interactive Dashboard ─────────────────────── -->
+    <section class="section dashboard-full fade-up" id="dashboard">
+        <div class="section-header">
+            <div class="section-tag">Live Data</div>
+            <h2>Interactive Dashboard</h2>
+            <p>Explore the data with filters and interactive charts. Click on elements to drill down into specific segments.</p>
+        </div>
+        <div class="dashboard-section">
+            <div class="tableau-container">
+                <div class='tableauPlaceholder' id='viz1773026387135' style='position: relative'>
+                    <noscript>
+                        <a href='#'><img alt='Strategic Product Placement Dashboard' src='https://public.tableau.com/static/images/pr/product_placement/Dashboard1/1_rss.png' style='border: none' /></a>
+                    </noscript>
+                    <object class='tableauViz' style='display:none;'>
+                        <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
+                        <param name='embed_code_version' value='3' />
+                        <param name='site_root' value='' />
+                        <param name='name' value='product_placement/Dashboard1' />
+                        <param name='tabs' value='no' />
+                        <param name='toolbar' value='yes' />
+                        <param name='static_image' value='https://public.tableau.com/static/images/pr/product_placement/Dashboard1/1.png' />
+                        <param name='animate_transition' value='yes' />
+                        <param name='display_static_image' value='yes' />
+                        <param name='display_spinner' value='yes' />
+                        <param name='display_overlay' value='yes' />
+                        <param name='display_count' value='yes' />
+                        <param name='language' value='en-US' />
+                    </object>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Story Scenes ──────────────────────────────── -->
+    <section class="section fade-up" id="story">
+        <div class="section-header">
+            <div class="section-tag">Insights</div>
+            <h2>Data Story: The Placement Impact Journey</h2>
+            <p>Walk through 7 key insights uncovered from the analysis, presented as a narrative story.</p>
+        </div>
+        <div class="story-section">
+            <!-- Story Progress Bar -->
+            <div class="story-progress">
+                <div class="step"><div class="dot active" onclick="showStory(1)">1</div><div class="line"></div></div>
+                <div class="step"><div class="dot" onclick="showStory(2)">2</div><div class="line"></div></div>
+                <div class="step"><div class="dot" onclick="showStory(3)">3</div><div class="line"></div></div>
+                <div class="step"><div class="dot" onclick="showStory(4)">4</div><div class="line"></div></div>
+                <div class="step"><div class="dot" onclick="showStory(5)">5</div><div class="line"></div></div>
+                <div class="step"><div class="dot" onclick="showStory(6)">6</div><div class="line"></div></div>
+                <div class="step"><div class="dot" onclick="showStory(7)">7</div></div>
+            </div>
+
+            <!-- Story Point 1 -->
+            <div class="story-point active" id="story-1">
+                <div class="story-card">
+                    <div class="story-number">Story Point 1</div>
+                    <h3>The Business Question</h3>
+                    <p class="caption">"Does product placement in stores actually impact sales?"</p>
+                    <div class="insight-label">Context</div>
+                    <ul>
+                        <li>Analyzing 989 products across 3 store positions: Aisle, End-cap, and Front of Store</li>
+                        <li>3 product categories examined: Clothing, Electronics, and Food</li>
+                        <li>4 consumer demographics: Families, College Students, Seniors, and Young Adults</li>
+                        <li>Additional factors tracked: pricing, promotions, foot traffic, and seasonality</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Story Point 2 -->
+            <div class="story-point" id="story-2">
+                <div class="story-card">
+                    <div class="story-number">Story Point 2</div>
+                    <h3>Product Position &amp; Sales Performance</h3>
+                    <p class="caption">"All three positions show similar average sales (~1,770 units)"</p>
+                    <div class="insight-label">Key Insights</div>
+                    <ul>
+                        <li><strong>Aisle:</strong> 1,781 average sales — marginally the highest performer</li>
+                        <li><strong>Front of Store:</strong> 1,773 average sales — close second</li>
+                        <li><strong>End-cap:</strong> 1,754 average sales — slightly trailing</li>
+                        <li>Surprising finding: position alone does NOT dramatically affect sales volume</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Story Point 3 -->
+            <div class="story-point" id="story-3">
+                <div class="story-card">
+                    <div class="story-number">Story Point 3</div>
+                    <h3>The Category Factor</h3>
+                    <p class="caption">"Product category interacts with placement to affect sales"</p>
+                    <div class="insight-label">Key Insights</div>
+                    <ul>
+                        <li>Different categories perform better in different positions</li>
+                        <li>Category-position combinations reveal hidden patterns in the heatmap</li>
+                        <li>Optimizing placement per category could unlock higher sales</li>
+                        <li>The interaction effect matters more than position alone</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Story Point 4 -->
+            <div class="story-point" id="story-4">
+                <div class="story-card">
+                    <div class="story-number">Story Point 4</div>
+                    <h3>Demographics Matter</h3>
+                    <p class="caption">"Customer demographics influence how placement affects sales"</p>
+                    <div class="insight-label">Key Insights</div>
+                    <ul>
+                        <li>Different customer groups respond differently to product placement</li>
+                        <li>Families, Seniors, College Students, and Young Adults show distinct patterns</li>
+                        <li>Targeted placement strategies should vary per demographic segment</li>
+                        <li>One-size-fits-all placement is sub-optimal</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Story Point 5 -->
+            <div class="story-point" id="story-5">
+                <div class="story-card">
+                    <div class="story-number">Story Point 5</div>
+                    <h3>Price &amp; Promotion Effects</h3>
+                    <p class="caption">"Price competitiveness and promotions shape sales outcomes"</p>
+                    <div class="insight-label">Key Insights</div>
+                    <ul>
+                        <li>99.9% of products are priced above competitors (avg +$2.47 premium)</li>
+                        <li>Promotions have a measurable impact across different positions</li>
+                        <li>Price-sales relationship varies by placement position</li>
+                        <li>Combining promotions with strategic placement amplifies results</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Story Point 6 -->
+            <div class="story-point" id="story-6">
+                <div class="story-card">
+                    <div class="story-number">Story Point 6</div>
+                    <h3>The Multi-Factor View</h3>
+                    <p class="caption">"Foot traffic + promotion + position: the full picture"</p>
+                    <div class="insight-label">Key Insights</div>
+                    <ul>
+                        <li>Combining all factors reveals nuanced, multi-layered patterns</li>
+                        <li>High foot traffic areas paired with promotions yield the best results</li>
+                        <li>Seasonal effects influence placement effectiveness differently</li>
+                        <li>Interactive dashboard exploration shows how factors work together</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Story Point 7 -->
+            <div class="story-point" id="story-7">
+                <div class="story-card">
+                    <div class="story-number">Story Point 7</div>
+                    <h3>Strategic Recommendations</h3>
+                    <p class="caption">"Data-driven recommendations for optimal product placement"</p>
+                    <div class="insight-label">Recommendations</div>
+                    <ul>
+                        <li><strong>1.</strong> Position alone is NOT the dominant sales driver — avoid over-investing in premium shelf space</li>
+                        <li><strong>2.</strong> Focus on category-position optimization for maximum impact</li>
+                        <li><strong>3.</strong> Target demographics with tailored placement strategies</li>
+                        <li><strong>4.</strong> Combine promotions strategically with high-traffic positions</li>
+                        <li><strong>5.</strong> Consider seasonal timing when making placement changes</li>
+                        <li><strong>6.</strong> Monitor price competitiveness relative to competitors continuously</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Previous / Next Controls -->
+            <div class="story-controls">
+                <button class="btn-prev" id="btnPrev" onclick="changeStory(-1)" disabled>&#8592; Previous</button>
+                <span class="story-counter" id="storyCounter">1 / 7</span>
+                <button class="btn-next" id="btnNext" onclick="changeStory(1)">Next &#8594;</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Key Findings ──────────────────────────────── -->
+    <section class="section fade-up" id="findings">
+        <div class="section-header">
+            <div class="section-tag">Results</div>
+            <h2>Key Findings at a Glance</h2>
+            <p>The most critical insights distilled from the analysis.</p>
+        </div>
+        <div class="findings-grid">
+            <div class="finding-card">
+                <div class="icon">📊</div>
+                <h4>Minimal Position Effect</h4>
+                <p>Average sales across Aisle (1,781), Front of Store (1,773), and End-cap (1,754) differ by less than 1.5%, suggesting position alone is not the key driver.</p>
+            </div>
+            <div class="finding-card">
+                <div class="icon">🏷️</div>
+                <h4>Price Premium Risk</h4>
+                <p>99.9% of products are priced above competitors with an average premium of $2.47. This pricing gap may limit the impact of placement strategies.</p>
+            </div>
+            <div class="finding-card">
+                <div class="icon">🎯</div>
+                <h4>Category Interaction</h4>
+                <p>Product category significantly interacts with placement. Clothing, Electronics, and Food each respond differently to position changes.</p>
+            </div>
+            <div class="finding-card">
+                <div class="icon">👥</div>
+                <h4>Demographic Variation</h4>
+                <p>Families, Seniors, Young Adults, and College Students show distinct purchasing behaviors based on where products are placed.</p>
+            </div>
+            <div class="finding-card">
+                <div class="icon">📢</div>
+                <h4>Promotion Multiplier</h4>
+                <p>Promotions amplify the effect of specific positions. Combining the right promotion with the right placement can boost sales significantly.</p>
+            </div>
+            <div class="finding-card">
+                <div class="icon">🚶</div>
+                <h4>Traffic-Position Synergy</h4>
+                <p>High foot traffic areas combined with strategic placement and active promotions produce the strongest sales performance.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>Strategic Product Placement Analysis &mdash; Data Analytics Project &copy; 2026</p>
+        <p style="margin-top: 6px;">
+            Built with <a href="https://public.tableau.com/" target="_blank" rel="noopener noreferrer">Tableau Public</a> &amp; Python
+        </p>
+    </footer>
+
+    <!-- ── Tableau Embed Script ──────────────────────── -->
+    <script type="text/javascript">
+        var divElement = document.getElementById('viz1773026387135');
+        var vizElement = divElement.getElementsByTagName('object')[0];
+        vizElement.style.width  = '100%';
+        vizElement.style.height = '900px';
+        if (divElement.offsetWidth > 800) {
+            vizElement.style.height = '1100px';
+        } else if (divElement.offsetWidth > 500) {
+            vizElement.style.height = '900px';
+        } else {
+            vizElement.style.height = '750px';
+        }
+        var scriptElement = document.createElement('script');
+        scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+        vizElement.parentNode.insertBefore(scriptElement, vizElement);
+    </script>
+
+    <!-- ── Story Navigation Script ───────────────────── -->
+    <script>
+        var currentStory = 1;
+        var totalStories = 7;
+
+        function showStory(n) {
+            currentStory = n;
+            // Hide all story points
+            document.querySelectorAll('.story-point').forEach(function(el) {
+                el.classList.remove('active');
+            });
+            // Show selected story point
+            document.getElementById('story-' + n).classList.add('active');
+
+            // Update progress dots
+            var dots = document.querySelectorAll('.story-progress .dot');
+            var lines = document.querySelectorAll('.story-progress .line');
+            dots.forEach(function(dot, i) {
+                dot.classList.remove('active', 'completed');
+                if (i + 1 === n) dot.classList.add('active');
+                else if (i + 1 < n) dot.classList.add('completed');
+            });
+            lines.forEach(function(line, i) {
+                line.classList.toggle('filled', i + 1 < n);
+            });
+
+            // Update counter
+            document.getElementById('storyCounter').textContent = n + ' / ' + totalStories;
+            // Update prev/next button states
+            document.getElementById('btnPrev').disabled = (n === 1);
+            document.getElementById('btnNext').disabled = (n === totalStories);
+        }
+
+        function changeStory(direction) {
+            var next = currentStory + direction;
+            if (next >= 1 && next <= totalStories) {
+                showStory(next);
+            }
+        }
+
+        // Scroll-triggered fade-up animations
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-up').forEach(function(el) {
+            observer.observe(el);
+        });
+    </script>
+
+</body>
+</html>
